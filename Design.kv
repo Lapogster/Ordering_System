@@ -1,0 +1,181 @@
+# LaPizzaO'Sei Ordering System Kivy Window Design
+# A file that will use the Kivy Design Language to create the visual representation
+# Written by Luca Pograri
+
+WindowManager:
+    FrontScreen:
+        name: "frontScreen"
+    MainOrderMenu:
+        name: "main"
+    CategoryOrderMenu:
+        name: "CategoryOrderMenu"
+    MainMenu:
+    OrderComplete:
+
+<FrontScreen>:
+    name: "frontScreen"
+
+    FloatLayout:
+        canvas.before:
+            Rectangle:
+                pos: self.pos
+                size: self.size
+                source: "Front_Screen_Logo.png"
+
+        cols: 1
+
+        Button:
+            text: "CREATE NEW ORDER"
+            background_color: 0, 2, 20, 1
+            color: 1, 1, 1, 1
+            size: 420, 180
+            size_hint: None, None
+            pos: 300, 250
+            pos_hint: {'center_x':0.5, 'center_y':0.2}
+            on_release:
+                root.start()
+                app.root.current = "first"
+                root.manager.transition.direction = "left"
+
+        #Button:
+        #    text: "Table Number"
+        #    background_color: 0, 2, 20, 1
+        #    color: 1, 1, 1, 1
+        #    size: 420, 180
+        #    size_hint: None, None
+        #    pos: 300, 250
+        #    pos_hint: {'center_x':0.9, 'center_y':0.9}
+
+<MainOrderMenu>:
+    name: "main"
+
+    FloatLayout:
+        cols: 1
+
+        GridLayout:
+            cols: 2
+
+            GridLayout:
+                cols: 1
+    
+                RV:
+    
+                Button:
+                    text: "Remove Recent Item"
+                    on_release:
+                        root.removeItem()
+
+            GridLayout:
+                cols: 1
+
+                Button:
+                    text: "CHECKOUT"
+                    on_release:
+                        root.processOrder()
+                        app.root.current = "end"
+                        root.manager.transition.direction = "left"
+
+                Button:
+                    text: "BACK"
+                    on_release:
+                        app.root.current = "first"
+                        root.manager.transition.direction = "right"
+
+<SelectableLabel>:
+    canvas.before:
+        Color:
+            rgba: (.0, 0.9, .1, .3) if self.selected else (0, 0, 0, 1)
+        Rectangle:
+            pos: self.pos
+            size: self.size
+
+<RV>:
+    viewclass: 'SelectableLabel'
+    SelectableRecycleGridLayout:
+        default_size: None, None
+        default_size_hint: 1, None
+        size_hint_y: None
+        height: self.minimum_height
+        multiselect: False
+        touch_multiselect: False
+        cols: 1
+
+<CategoryOrderMenu>:
+    name: "CategoryOrderMenu"
+
+    GridLayout:
+        cols: 2
+
+        GridLayout:
+            cols: 1
+
+            RV:
+
+            Button:
+                text: "Remove Recent Item"
+                on_release:
+                    root.removeItem()
+
+        GridLayout:
+            cols: 1
+            Button:
+                text: "Return To Categories"
+                on_release:
+                    app.root.current = "main"
+                    root.manager.transition.direction = "right"
+
+<MainMenu>:
+    name: "first"
+
+    FloatLayout:
+        cols: 1
+
+        GridLayout:
+            cols: 1
+
+            Button:
+                text: "VIEW MENU"
+                on_release: 
+                    app.root.current = "main"
+                    root.manager.transition.direction = "left"
+
+            GridLayout:
+                cols: 2
+
+                Button:
+                    text: "CHECKOUT"
+                    on_release:
+                        root.processOrder()
+                        app.root.current = "end"
+                        root.manager.transition.direction = "left"
+
+                Button:
+                    text: "CANCEL ORDER"
+                    on_release:
+                        app.root.current = "frontScreen"
+                        root.manager.transition.direction = "right"
+
+<OrderComplete>:
+    name: "end"
+
+    GridLayout:
+        cols: 3
+
+        GridLayout:
+            cols: 1
+        
+        GridLayout:
+            cols: 1
+
+            Label:
+                text: "Your Order has been processed"
+            
+            Button:
+                text: "End Session"
+                on_release:
+                    app.root.current = "frontScreen"
+                    root.manager.transition.direction = "right"
+                    root.updateStock()
+
+        GridLayout:
+            cols: 1
